@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Player : Character , IAttackable
 {
-    public GameObject rockPrefab;
-    public Camera mainCamera;
+    public GameObject rockPrefab;      
+    public Camera mainCamera;          
+    private GameObject currentRock;    // The currently held rock
+    private Rock rockScript;           // The Rock script for the held rock
+    private bool isHoldingRock = false; 
 
     private void Start()
     {
@@ -16,73 +19,63 @@ public class Player : Character , IAttackable
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // Left-click to pick up or throw
+        // Left mouse button (Mouse0) to pick up or throw the rock
+        if (Input.GetMouseButtonDown(0) && !isHoldingRock)  // Pick up the rock
         {
-            if (rockCount > 0)
-            {
-                Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-                ThrowRock(mousePosition);
-            }
-            else
-            {
-                PickUpRock();
-            }
+            TryPickUpRock();
         }
-
-        if (Input.GetMouseButtonDown(1)) // Right-click to transform to rock form
+        else if (Input.GetMouseButton(0) && isHoldingRock)  // While holding, aim the rock
         {
-            TransformToRockForm();
+            AimRock();
+        }
+        else if (Input.GetMouseButtonUp(0) && isHoldingRock)  // Release to throw the rock
+        {
+            ThrowRock();
         }
     }
 
-    public override void PickUpRock()
+    private void TryPickUpRock()
     {
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Collider2D rockCollider = Physics2D.OverlapPoint(mousePosition);
 
         if (rockCollider != null && rockCollider.CompareTag("Rock"))
         {
-            Destroy(rockCollider.gameObject); // Remove rock from scene
-            rockCount++;
-            Debug.Log($"Picked up a rock. Rocks: {rockCount}");
-        }
-        else
-        {
-            Debug.Log("No rock to pick up here.");
+            currentRock = rockCollider.gameObject;
+            rockScript = currentRock.GetComponent<Rock>();
+            isHoldingRock = true;
+            Debug.Log("Picked up a rock.");
         }
     }
 
-    public override void ThrowRock(Vector2 direction)
+    private void AimRock()
     {
-        if (rockCount > 0)
+        if (currentRock != null && rockScript != null)
         {
-            GameObject rock = Instantiate(rockPrefab, transform.position, Quaternion.identity);
-            Rigidbody2D rb = rock.AddComponent<Rigidbody2D>();
-            rb.AddForce((direction - (Vector2)transform.position).normalized * 10f, ForceMode2D.Impulse);
+            Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePosition - (Vector2)transform.position).normalized;
+
+            // Position the rock slightly in front of the player
+            currentRock.transform.position = (Vector2)transform.position + direction * 1f;
+        }
+    }
+
+    private void ThrowRock()
+    {
+        if (currentRock != null && rockScript != null)
+        {
+            Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = (mousePosition - (Vector2)transform.position).normalized;
+            rockScript.Throw(direction);  // Call the Throw method from the Rock script
             rockCount--;
-            Debug.Log($"Threw a rock. Rocks left: {rockCount}");
+            
+            currentRock = null;
+            rockScript = null;
+            isHoldingRock = false;
         }
     }
 
-    public override void TransformToRockForm()
-    {
-        if (rockCount > 0)
-        {
-            Debug.Log("Transformed to Rock Form - parry mode");
-            rockCount--;
-            StartCoroutine(ExitRockForm(2f)); // Stay in rock form for 2 seconds
-        }
-        else
-        {
-            Debug.Log("No rocks available for transformation.");
-        }
-    }
-
-    private System.Collections.IEnumerator ExitRockForm(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        Debug.Log("Exited Rock Form.");
-    }
+    
 
     public void TakeDamage(int damage)
     {

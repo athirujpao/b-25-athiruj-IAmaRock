@@ -1,19 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Character : MonoBehaviour
 {
-    // shared properties for health and rock count for encap
     protected int health;
     protected int rockCount;
+
+    public virtual void PickUpRock() { }
+    public virtual void ThrowRock(Vector2 direction) { }
+
+    // Handle taking damage for both Player and Enemy
     
 
-    
-
-    // Shared methods for picking up rocks, throwing them, and parrying shared to enemy
-    public abstract void PickUpRock();
-    public abstract void ThrowRock(Vector2 direction); // 
-    public abstract void TransformToRockForm();
+    // Update Rock Count UI for both Player and Enemy
+    public void UpdateRockCountUI(Text rockCountText)
+    {
+        if (rockCountText != null)
+        {
+            rockCountText.text = $"Rocks: {rockCount}";
+        }
+    }
 }
 
