@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class Rock : MonoBehaviour , ICollectible
+public class Rock : MonoBehaviour , ICollectible 
 {
 
     public float throwForce = 10f;
@@ -28,21 +28,33 @@ public class Rock : MonoBehaviour , ICollectible
     // Called when the rock collides with something
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Optionally, check for specific collisions (like player, enemy, ground, etc.)
         Debug.Log($"Rock hit something: {collision.gameObject.name}");
-        Destroy(gameObject);  // Destroy the rock on collision
+
+        // Check if the rock hit an enemy or player
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
+        {
+            // Deal damage to the enemy or player
+            Character character = collision.gameObject.GetComponent<Character>();
+            if (character != null)
+            {
+                character.TakeDamage(1);  
+            }
+        }
+
+        Destroy(gameObject);  
     }
 
     // Collect the rock (e.g., when the player picks it up)
     public void Collect()
     {
-        Destroy(gameObject);  // Destroy the rock when it is collected
+         
     }
 
-    // Check if the rock is on the ground (this method will return true if the rock is on the ground)
+    
     public bool IsOnGround()
     {
         return rb.IsSleeping(); // Checks if the Rigidbody is resting on the ground (not moving)
     }
+    
 }
 

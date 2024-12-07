@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Character , IAttackable
+public class Player : Character ,IAttackable
 {
-    public GameObject rockPrefab;      
+    public GameObject RockPrefab { get; set; }
+    
     public Camera mainCamera;          
     private GameObject currentRock;    // The currently held rock
     private Rock rockScript;           // The Rock script for the held rock
@@ -77,17 +78,5 @@ public class Player : Character , IAttackable
 
     
 
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-        {
-            Debug.Log("Player has died.");
-            // Implement death logic here
-        }
-        else
-        {
-            Debug.Log($"Player took {damage} damage. Health left: {health}");
-        }
-    }
+    
 }
