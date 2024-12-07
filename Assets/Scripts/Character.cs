@@ -10,7 +10,8 @@ public abstract class Character : MonoBehaviour
 
     public float pickupRadius = 1.5f;  // Radius to pick up rocks
     public float pickupCooldown = 1f;
-    private float lastPickupTime = 0f;
+    public float lastPickupTime = 0f;     // needed to add this because enemy pick up rock too fast steal all rock from player and i dont want to add radius for pick up in both of them it make the flow of the game feel unhinged 
+
 
     public virtual void PickUpRock() { }
     public virtual void ThrowRock() { }

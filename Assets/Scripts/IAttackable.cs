@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IAttackable
 {
-    public GameObject RockPrefab { get; set; }
+    
     void TakeDamage(int damage);
 }

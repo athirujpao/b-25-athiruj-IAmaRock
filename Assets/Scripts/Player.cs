@@ -61,7 +61,7 @@ public class Player : Character ,IAttackable
         }
     }
 
-    private void ThrowRock()
+    public override void ThrowRock() // this find some youtube he said if use this will work because null i try both but with null code work try na find alt that doesnt use null but cant T-T
     {
         if (currentRock != null && rockScript != null)
         {
@@ -72,7 +72,7 @@ public class Player : Character ,IAttackable
             
             currentRock = null;
             rockScript = null;
-            isHoldingRock = false;
+            
         }
     }
 
