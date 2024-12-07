@@ -96,7 +96,7 @@ public class Enemy : Character , IAttackable
     {
         if (rockCount > 0)
         {
-            Vector2 directionToPlayer = (playerTransform.position - bulletSpawnPoint.position).normalized;
+            Vector2 directionToPlayer = (playerTransform.position - bulletSpawnPoint.position);
             GameObject rockInstance = Instantiate(RockPrefab, bulletSpawnPoint.position, Quaternion.identity);
             Rock rockScript = rockInstance.GetComponent<Rock>();
             rockScript.Throw(directionToPlayer);  // Shoot toward the player and both are the at this point why doesnt not work with both

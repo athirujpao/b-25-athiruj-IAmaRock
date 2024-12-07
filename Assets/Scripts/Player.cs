@@ -67,12 +67,12 @@ public class Player : Character ,IAttackable
         {
             Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             Vector2 direction = (mousePosition - (Vector2)transform.position).normalized;
-            rockScript.Throw(direction);  // Call the Throw method from the Rock script
+            rockScript.Throw(direction);  // Call the Throw method from the Rock script  (this work but not for enemy) T-T
             rockCount--;
             
             currentRock = null;
             rockScript = null;
-            
+            isHoldingRock = false; // reset player to pickup rock again finnallly T-T one week make this work YEAAAAAAA
         }
     }
 
